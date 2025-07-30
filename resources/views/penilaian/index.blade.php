@@ -62,8 +62,9 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap.min.js"></script>
+<script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('js/dataTables.bootstrap.min.js') }}"></script>
+
 <script>
     $(document).ready(function() {
         $('#penilaian-table').DataTable();
@@ -72,5 +73,6 @@
 @endpush
 
 @push('styles')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="{{ asset('css/dataTables.bootstrap.min.css') }}">
+
 @endpush
