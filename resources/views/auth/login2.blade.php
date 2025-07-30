@@ -56,6 +56,21 @@
             <div style="font-size:20px;font-weight:600;margin-top:8px;">SI Jurnal PKL SMKN 2 Kota Jambi</div>
         </div>
         <div class="login-box-body">
+            @if(session('status'))
+                <div class="alert alert-success">{{ session('status') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul style="margin-bottom:0;">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <p class="login-box-msg">Silakan login untuk memulai sesi Anda</p>
             <form action="{{ route('login') }}" method="post">
                 @csrf

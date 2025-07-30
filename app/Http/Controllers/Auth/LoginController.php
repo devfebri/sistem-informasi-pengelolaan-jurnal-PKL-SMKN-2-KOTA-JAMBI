@@ -55,4 +55,9 @@ class LoginController extends Controller
         }
         return '/home';
     }
+    
+    public function username()
+    {
+        return 'username';
+    }
 }
