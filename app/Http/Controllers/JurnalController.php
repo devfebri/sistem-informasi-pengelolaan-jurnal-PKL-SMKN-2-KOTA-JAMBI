@@ -35,7 +35,7 @@ class JurnalController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Jurnal::class);
+        $this->authorize('siswa', Jurnal::class);
 
         // Cek apakah siswa sudah punya instansi
         if (auth()->user()->role == 'siswa' && empty(auth()->user()->instansi_id)) {
@@ -98,7 +98,7 @@ class JurnalController extends Controller
      */
     public function edit(Jurnal $jurnal)
     {
-        $this->authorize('update', $jurnal);
+        $this->authorize('siswa', $jurnal);
         return view('jurnal.edit', compact('jurnal'));
     }
 
@@ -107,7 +107,7 @@ class JurnalController extends Controller
      */
     public function update(Request $request, Jurnal $jurnal)
     {
-        $this->authorize('update', $jurnal);
+        $this->authorize('siswa', $jurnal);
         $request->validate([
             'tanggal' => 'required|date',
             'jam_mulai' => 'required',
@@ -134,7 +134,7 @@ class JurnalController extends Controller
      */
     public function destroy(Jurnal $jurnal)
     {
-        $this->authorize('delete', $jurnal);
+        $this->authorize('siswa', $jurnal);
         $jurnal->delete();
         return redirect()->route('jurnal.index')->with('success', 'Jurnal berhasil dihapus');
     }

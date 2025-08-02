@@ -32,6 +32,10 @@ class JurnalPolicy
     {
         return $user->role==='siswa';
     }
+    public function siswa(User $user): bool
+    {
+        return $user->role==='siswa';
+    }
 
     /**
      * Determine whether the user can update the model.

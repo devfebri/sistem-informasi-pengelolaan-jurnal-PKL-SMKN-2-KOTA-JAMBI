@@ -68,7 +68,9 @@
                 </div>
                 <div class="box-footer">
                     <a href="{{ route('jurnal.index') }}" class="btn btn-default">Kembali</a>
+                    @if(auth()->user()->role=='siswa')
                     <a href="{{ route('jurnal.edit', $jurnal->id) }}" class="btn btn-warning">Edit</a>
+                    @endif
                 </div>
             </div>
         </div>
