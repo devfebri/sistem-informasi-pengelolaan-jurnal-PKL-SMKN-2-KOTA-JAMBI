@@ -19,9 +19,15 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'username', // tambahkan ini
+        'username',
+        'nisn',
+        'nip',
         'email',
+        'phone',
+        'gender',
         'role',
+        'instansi_id',
+        'guru_id',
         'password',
     ];
 
@@ -51,5 +57,15 @@ class User extends Authenticatable
     public function instansi()
     {
         return $this->belongsTo(\App\Models\Instansi::class, 'instansi_id');
+    }
+
+    public function guru()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'guru_id');
+    }
+
+    public function siswa()
+    {
+        return $this->hasMany(\App\Models\User::class, 'guru_id')->where('role', 'siswa');
     }
 }

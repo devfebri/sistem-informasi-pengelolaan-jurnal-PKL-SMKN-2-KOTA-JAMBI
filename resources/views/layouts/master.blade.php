@@ -16,6 +16,98 @@
     <link rel="stylesheet" href="{{ asset('template/bower_components/bootstrap-daterangepicker/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    
+    <!-- Custom Sidebar Styles -->
+    <style>
+        .sidebar .user-panel {
+            padding: 10px;
+            border-bottom: 1px solid #367fa9;
+        }
+        
+        .sidebar .user-panel .image img {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .sidebar .user-panel .info {
+            padding: 5px 5px 5px 15px;
+            line-height: 1;
+        }
+        
+        .sidebar .user-panel .info p {
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #fff;
+        }
+        
+        .sidebar .user-panel .info small {
+            color: #b8c7ce;
+        }
+        
+        .sidebar .sidebar-form {
+            border-radius: 3px;
+            border: 1px solid #374850;
+            margin: 10px 10px;
+        }
+        
+        .sidebar .sidebar-form .form-control {
+            background: #374850;
+            border: none;
+            border-radius: 0;
+            color: #fff;
+            height: 35px;
+        }
+        
+        .sidebar .sidebar-form .form-control:focus {
+            background: #374850;
+            border: none;
+            box-shadow: none;
+        }
+        
+        .sidebar .sidebar-form .btn {
+            background: #374850;
+            border: none;
+            border-radius: 0;
+            color: #999;
+        }
+        
+        .sidebar-menu .header {
+            color: #4b646f;
+            background: #1a2226;
+            padding: 10px 25px 10px 15px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin: 0;
+            border-top: 1px solid #367fa9;
+        }
+        
+        .sidebar-menu .footer-info {
+            background: #1a2226;
+            margin: 0;
+            border-top: 1px solid #367fa9;
+        }
+        
+        .sidebar-menu .treeview-menu {
+            padding-left: 5px;
+        }
+        
+        .sidebar-menu .treeview-menu > li > a {
+            padding-left: 25px;
+        }
+        
+        .sidebar-menu > li.active > a {
+            color: #fff;
+            background: #367fa9;
+            border-left: 3px solid #3c8dbc;
+        }
+        
+        .sidebar-menu > li > .treeview-menu > li.active > a {
+            color: #fff;
+            background: #367fa9;
+        }
+    </style>
+    
     @stack('styles')
 </head>
 
@@ -42,10 +134,9 @@
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
                         
-                        <li class="dropdown user user-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <li class="dropdown user user-menu">                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="{{ asset('img/logo.jpg') }}" class="user-image" alt="User Image">
-                                <span class="hidden-xs">{{ auth()->user()->name }}</span>
+                                <span class="hidden-xs">{{ Auth::user()->name }}</span>
                             </a>
                             <ul class="dropdown-menu">
                                

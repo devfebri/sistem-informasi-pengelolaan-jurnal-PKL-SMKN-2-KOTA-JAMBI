@@ -17,7 +17,7 @@ class Jurnal extends Model
         'jam_mulai',
         'jam_selesai',
         'kegiatan',
-        'file_jurnal',
+        'deskripsi',
         'status'
     ];
 

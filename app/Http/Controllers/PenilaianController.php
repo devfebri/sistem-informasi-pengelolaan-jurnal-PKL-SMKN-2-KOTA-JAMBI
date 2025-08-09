@@ -16,18 +16,35 @@ class PenilaianController extends Controller
     
     public function index()
     {
-        // $penilaians = Penilaian::where('guru_id', Auth::id())->get();
-        if(auth()->user()->role=='siswa'){
+        // Untuk siswa: tampilkan jurnal mereka dengan status validasi
+        if(Auth::user()->role=='siswa'){
             $penilaians = DB::table('jurnals')
-                ->select('jurnals.*', 'penilaians.nilai')
+                ->select('jurnals.*', 'penilaians.status_validasi', 'penilaians.catatan_validasi', 'penilaians.created_at as tanggal_validasi', 'users.name as nama_guru')
                 ->leftJoin('penilaians', 'jurnals.id', '=', 'penilaians.jurnal_id')
-                ->where('user_id', Auth::id())
+                ->leftJoin('users', 'penilaians.guru_id', '=', 'users.id')
+                ->where('jurnals.user_id', Auth::id())
+                ->orderBy('jurnals.tanggal', 'desc')
                 ->get();
-        }else{
-             $penilaians = DB::table('jurnals')
-                ->select('jurnals.*', 'penilaians.nilai')
-                ->leftJoin('penilaians', 'jurnals.id', '=', 'penilaians.jurnal_id')
-                ->get();
+        } else {
+            // Untuk guru: tampilkan jurnal siswa bimbingan mereka yang perlu divalidasi
+            if(Auth::user()->role == 'guru') {
+                $penilaians = DB::table('jurnals')
+                    ->select('jurnals.*', 'penilaians.status_validasi', 'penilaians.catatan_validasi', 'penilaians.created_at as tanggal_validasi', 'siswa.name as nama_siswa')
+                    ->leftJoin('penilaians', 'jurnals.id', '=', 'penilaians.jurnal_id')
+                    ->leftJoin('users as siswa', 'jurnals.user_id', '=', 'siswa.id')
+                    ->where('siswa.guru_id', Auth::id())
+                    ->orderBy('jurnals.tanggal', 'desc')
+                    ->get();
+            } else {
+                // Untuk admin: tampilkan semua jurnal
+                $penilaians = DB::table('jurnals')
+                    ->select('jurnals.*', 'penilaians.status_validasi', 'penilaians.catatan_validasi', 'penilaians.created_at as tanggal_validasi', 'siswa.name as nama_siswa', 'guru.name as nama_guru')
+                    ->leftJoin('penilaians', 'jurnals.id', '=', 'penilaians.jurnal_id')
+                    ->leftJoin('users as siswa', 'jurnals.user_id', '=', 'siswa.id')
+                    ->leftJoin('users as guru', 'penilaians.guru_id', '=', 'guru.id')
+                    ->orderBy('jurnals.tanggal', 'desc')
+                    ->get();
+            }
         }
         return view('penilaian.index', compact('penilaians'));
     }
@@ -37,11 +54,17 @@ class PenilaianController extends Controller
      */
     public function create()
     {
-        // Ambil jurnal yang belum dinilai oleh guru ini
-        $jurnals = Jurnal::whereDoesntHave('penilaian', function($q){
-            $q->where('guru_id', Auth::id());
-        })->get();
-        // dd($jurnals);
+        // Ambil jurnal siswa bimbingan yang belum divalidasi oleh guru ini
+        $jurnals = Jurnal::with('user')
+            ->whereHas('user', function($q) {
+                $q->where('guru_id', Auth::id());
+            })
+            ->whereDoesntHave('penilaian', function($q){
+                $q->where('guru_id', Auth::id());
+            })
+            ->orderBy('tanggal', 'desc')
+            ->get();
+        
         return view('penilaian.create', compact('jurnals'));
     }
 
@@ -52,27 +75,33 @@ class PenilaianController extends Controller
     {
         $request->validate([
             'jurnal_id' => 'required|exists:jurnals,id',
-            'nilai' => 'required|integer|min:0|max:100',
-            'catatan' => 'nullable|string',
+            'status_validasi' => 'required|in:valid,tidak_valid,revisi',
+            'catatan_validasi' => 'nullable|string',
         ]);
 
-        // Cek apakah jurnal sudah dinilai oleh guru ini
-        $sudahDinilai = Penilaian::where('jurnal_id', $request->jurnal_id)
+        // Cek apakah jurnal sudah divalidasi oleh guru ini
+        $sudahDivalidasi = Penilaian::where('jurnal_id', $request->jurnal_id)
             ->where('guru_id', Auth::id())
             ->exists();
 
-        if ($sudahDinilai) {
-            return redirect()->back()->withErrors(['jurnal_id' => 'Jurnal ini sudah dinilai!']);
+        if ($sudahDivalidasi) {
+            return redirect()->back()->withErrors(['jurnal_id' => 'Jurnal ini sudah divalidasi!']);
+        }
+
+        // Cek apakah jurnal milik siswa bimbingan guru ini
+        $jurnal = Jurnal::with('user')->find($request->jurnal_id);
+        if ($jurnal->user->guru_id != Auth::id()) {
+            return redirect()->back()->withErrors(['jurnal_id' => 'Anda hanya bisa memvalidasi jurnal siswa bimbingan Anda!']);
         }
 
         Penilaian::create([
             'jurnal_id' => $request->jurnal_id,
             'guru_id' => Auth::id(),
-            'nilai' => $request->nilai,
-            'catatan' => $request->catatan,
+            'status_validasi' => $request->status_validasi,
+            'catatan_validasi' => $request->catatan_validasi,
         ]);
 
-        return redirect()->route('jurnal.index')->with('success', 'Penilaian berhasil ditambahkan');
+        return redirect()->route('penilaian.index')->with('success', 'Jurnal berhasil divalidasi');
     }
 
     /**
@@ -98,11 +127,12 @@ class PenilaianController extends Controller
     public function update(Request $request, Penilaian $penilaian)
     {
         $request->validate([
-            'nilai' => 'required|integer|min:0|max:100',
-            'catatan' => 'nullable|string',
+            'status_validasi' => 'required|in:valid,tidak_valid,revisi',
+            'catatan_validasi' => 'nullable|string',
         ]);
-        $penilaian->update($request->only('nilai', 'catatan'));
-        return redirect()->route('penilaian.index')->with('success', 'Penilaian berhasil diupdate');
+        
+        $penilaian->update($request->only('status_validasi', 'catatan_validasi'));
+        return redirect()->route('penilaian.index')->with('success', 'Validasi jurnal berhasil diupdate');
     }
 
     /**
@@ -111,6 +141,6 @@ class PenilaianController extends Controller
     public function destroy(Penilaian $penilaian)
     {
         $penilaian->delete();
-        return redirect()->route('penilaian.index')->with('success', 'Penilaian berhasil dihapus');
+        return redirect()->route('penilaian.index')->with('success', 'Validasi jurnal berhasil dihapus');
     }
 }
