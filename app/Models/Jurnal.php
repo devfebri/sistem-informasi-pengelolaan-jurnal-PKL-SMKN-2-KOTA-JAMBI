@@ -25,6 +25,12 @@ class Jurnal extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function siswa()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function penilaian()
     {
         return $this->hasMany(\App\Models\Penilaian::class, 'jurnal_id');

@@ -24,6 +24,8 @@ class DashboardController extends Controller
                 return $this->guruDashboard();
             case 'siswa':
                 return $this->siswaDashboard();
+            case 'pimpinan':
+                return $this->pimpinanDashboard();
             default:
                 return redirect()->route('login');
         }
@@ -200,6 +202,32 @@ class DashboardController extends Controller
         return view('dashboard.siswa', compact(
             'totalJurnal', 'jurnalValid', 'jurnalRevisi', 'jurnalTidakValid', 'jurnalMenunggu',
             'recentJurnals', 'penilaianBerkala', 'weeklyProgress'
+        ));
+    }
+
+    private function pimpinanDashboard()
+    {
+        $totalJurnal = \App\Models\Jurnal::count();
+        $totalPenilaian = \App\Models\Penilaian::where('periode_penilaian', '!=', null)->count();
+        $totalSiswa = \App\Models\User::where('role', 'siswa')->count();
+        $totalGuru = \App\Models\User::where('role', 'guru')->count();
+        
+        // Ambil jurnal dengan relasi siswa dan instansi
+        $jurnals = \App\Models\Jurnal::with(['siswa.instansi'])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+            
+        // Ambil penilaian berkala dengan relasi siswa dan guru
+        $penilaians = \App\Models\Penilaian::with(['siswa', 'guru'])
+            ->whereNotNull('periode_penilaian')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+            
+        return view('dashboard.pimpinan', compact(
+            'totalJurnal', 'totalPenilaian', 'totalSiswa', 'totalGuru', 
+            'jurnals', 'penilaians'
         ));
     }
 }

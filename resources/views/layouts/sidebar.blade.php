@@ -92,6 +92,15 @@
         
         @endif
 
+        @if(Auth::user()->role === 'pimpinan')
+        <!-- Menu untuk Pimpinan -->
+        <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+            <a href="{{ route('dashboard') }}">
+                <i class="fa fa-bar-chart"></i> <span>Laporan PKL</span>
+            </a>
+        </li>
+        @endif
+
         <!-- Menu Profile untuk semua role -->
         <li class="header">PENGATURAN</li>
         <li class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">

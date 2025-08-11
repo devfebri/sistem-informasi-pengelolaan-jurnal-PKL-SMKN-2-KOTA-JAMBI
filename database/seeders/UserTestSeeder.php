@@ -60,9 +60,21 @@ class UserTestSeeder extends Seeder
             'gender' => 'L'
         ]);
 
+        // Pimpinan Test Account
+        User::create([
+            'name' => 'Pimpinan Sekolah',
+            'username' => 'pimpinan',
+            'email' => 'pimpinan@smkn2jambi.sch.id',
+            'password' => bcrypt('pimpinan123'),
+            'role' => 'pimpinan',
+            'phone' => '081234567899',
+            'gender' => 'L'
+        ]);
+
         echo "✅ User test accounts created:\n";
         echo "Admin: username=admin, password=admin123\n";
         echo "Guru: username=guru1, nip=196501011988031001, password=guru123\n";
         echo "Siswa: username=siswa1, nisn=3121001001, password=siswa123\n";
+        echo "Pimpinan: username=pimpinan, password=pimpinan123\n";
     }
 }

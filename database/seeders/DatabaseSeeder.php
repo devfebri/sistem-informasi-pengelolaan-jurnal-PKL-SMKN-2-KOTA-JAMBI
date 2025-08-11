@@ -93,6 +93,15 @@ class DatabaseSeeder extends Seeder
             'role' => 'siswa',
         ]);
 
+        // Tambahan user role pimpinan
+        \App\Models\User::factory()->create([
+            'name' => 'Pimpinan Sekolah',
+            'username' => 'pimpinan',
+            'email' => 'pimpinan@smkn2jambi.sch.id',
+            'password' => bcrypt('password'),
+            'role' => 'pimpinan',
+        ]);
+
         // Tambahan data instansi untuk testing
         \App\Models\Instansi::create([
             'nama' => 'PT. Teknologi Indonesia',
