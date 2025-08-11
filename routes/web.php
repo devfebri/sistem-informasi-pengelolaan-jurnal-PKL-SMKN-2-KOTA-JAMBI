@@ -29,7 +29,6 @@ Route::middleware(['auth'])->group(function () {
     
     // Route penilaian-berkala: siswa bisa akses index dan show, guru bisa akses semua
     Route::get('penilaian-berkala', [PenilaianBerkalaController::class, 'index'])->name('penilaian-berkala.index');
-    Route::get('penilaian-berkala/{penilaian_berkala}', [PenilaianBerkalaController::class, 'show'])->name('penilaian-berkala.show');
     Route::middleware(GuruMiddleware::class)->group(function () {
         Route::get('penilaian-berkala/create', [PenilaianBerkalaController::class, 'create'])->name('penilaian-berkala.create');
         Route::post('penilaian-berkala', [PenilaianBerkalaController::class, 'store'])->name('penilaian-berkala.store');
@@ -37,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('penilaian-berkala/{penilaian_berkala}', [PenilaianBerkalaController::class, 'update'])->name('penilaian-berkala.update');
         Route::delete('penilaian-berkala/{penilaian_berkala}', [PenilaianBerkalaController::class, 'destroy'])->name('penilaian-berkala.destroy');
     });
+    Route::get('penilaian-berkala/{penilaian_berkala}', [PenilaianBerkalaController::class, 'show'])->name('penilaian-berkala.show');
     
     Route::resource('instansi', InstansiController::class)->middleware(AdminMiddleware::class);
     Route::resource('user', UserController::class)->middleware(AdminMiddleware::class);
