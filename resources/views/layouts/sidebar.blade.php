@@ -94,13 +94,41 @@
 
         @if(Auth::user()->role === 'pimpinan')
         <!-- Menu untuk Pimpinan -->
-        <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-            <a href="{{ route('dashboard') }}">
-                <i class="fa fa-bar-chart"></i> <span>Laporan PKL</span>
+        <li class="treeview {{ request()->routeIs('laporan.*') ? 'active menu-open' : '' }}">
+            <a href="#">
+                <i class="fa fa-file-text"></i>
+                <span>Laporan PKL</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
             </a>
+            <ul class="treeview-menu">
+                <li class="{{ request()->routeIs('laporan.index') ? 'active' : '' }}">
+                    <a href="{{ route('laporan.index') }}">
+                        <i class="fa fa-home"></i> Pusat Laporan
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('laporan.lengkap') ? 'active' : '' }}">
+                    <a href="{{ route('laporan.lengkap') }}">
+                        <i class="fa fa-chart-bar"></i> Laporan Lengkap
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('laporan.siswa') ? 'active' : '' }}">
+                    <a href="{{ route('laporan.siswa') }}">
+                        <i class="fa fa-user-graduate"></i> Laporan Per Siswa
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('laporan.instansi') ? 'active' : '' }}">
+                    <a href="{{ route('laporan.instansi') }}">
+                        <i class="fa fa-building"></i> Laporan Per Instansi
+                    </a>
+                </li>
+            </ul>
         </li>
+        
         @endif
 
+      
         <!-- Menu Profile untuk semua role -->
         <li class="header">PENGATURAN</li>
         <li class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">

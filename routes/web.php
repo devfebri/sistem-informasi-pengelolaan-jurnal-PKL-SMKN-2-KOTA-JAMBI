@@ -11,6 +11,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\GuruMiddleware;
 
@@ -44,4 +45,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('guru', GuruController::class)->middleware(AdminMiddleware::class);
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    
+    // Routes Laporan (Hanya untuk pimpinan dan admin)
+    Route::prefix('laporan')->group(function () {
+        Route::get('/', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/lengkap', [LaporanController::class, 'laporanLengkap'])->name('laporan.lengkap');
+        Route::get('/siswa', [LaporanController::class, 'laporanSiswa'])->name('laporan.siswa');
+        Route::get('/instansi', [LaporanController::class, 'laporanInstansi'])->name('laporan.instansi');
+    });
 });

@@ -21,6 +21,10 @@ class Jurnal extends Model
         'status'
     ];
 
+    protected $casts = [
+        'tanggal' => 'date'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

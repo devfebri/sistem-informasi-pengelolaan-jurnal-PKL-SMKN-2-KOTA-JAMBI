@@ -2,8 +2,60 @@
 @section('title', 'Dashboard Pimpinan')
 @section('content')
 <div class="content-header">
-    <h1 class="mb-4">Laporan PKL - Pimpinan</h1>
+    <h1 class="mb-4">Dashboard Pimpinan</h1>
 </div>
+
+<!-- Quick Access Laporan -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="box box-primary">
+            <div class="box-body text-center">
+                <i class="fa fa-chart-bar fa-3x text-primary mb-3"></i>
+                <h4>Laporan Lengkap</h4>
+                <a href="{{ route('laporan.lengkap') }}" class="btn btn-primary btn-block">
+                    <i class="fa fa-eye mr-1"></i>Lihat Laporan
+                </a>
+                <a href="{{ route('laporan.lengkap', ['download' => 'pdf']) }}" class="btn btn-danger btn-block mt-2">
+                    <i class="fa fa-file-pdf-o mr-1"></i>Download PDF
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="box box-success">
+            <div class="box-body text-center">
+                <i class="fa fa-graduation-cap fa-3x text-success mb-3"></i>
+                <h4>Laporan Per Siswa</h4>
+                <a href="{{ route('laporan.siswa') }}" class="btn btn-success btn-block">
+                    <i class="fa fa-eye mr-1"></i>Lihat Laporan
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="box box-info">
+            <div class="box-body text-center">
+                <i class="fa fa-building fa-3x text-info mb-3"></i>
+                <h4>Laporan Per Instansi</h4>
+                <a href="{{ route('laporan.instansi') }}" class="btn btn-info btn-block">
+                    <i class="fa fa-eye mr-1"></i>Lihat Laporan
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="box box-warning">
+            <div class="box-body text-center">
+                <i class="fa fa-file-text fa-3x text-warning mb-3"></i>
+                <h4>Pusat Laporan</h4>
+                <a href="{{ route('laporan.index') }}" class="btn btn-warning btn-block">
+                    <i class="fa fa-home mr-1"></i>Pusat Laporan
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Rekapitulasi Jurnal & Penilaian</h3>

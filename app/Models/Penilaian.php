@@ -21,6 +21,11 @@ class Penilaian extends Model
         'tanggal_penilaian'
     ];
 
+    protected $casts = [
+        'tanggal_penilaian' => 'date',
+        'nilai' => 'decimal:2'
+    ];
+
     public function jurnal()
     {
         return $this->belongsTo(Jurnal::class);
