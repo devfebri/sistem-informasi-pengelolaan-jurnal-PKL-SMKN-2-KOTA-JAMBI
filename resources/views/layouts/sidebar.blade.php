@@ -50,7 +50,7 @@
 
         <li class="{{ request()->routeIs('jurnal.*') ? 'active' : '' }}">
             <a href="{{ route('jurnal.index') }}">
-                <i class="fa fa-book"></i> <span>Kelola Jurnal PKL</span>
+                <i class="fa fa-book"></i> <span>Laporan Kegiatan Siswa</span>
             </a>
         </li>
 
@@ -66,7 +66,8 @@
         <!-- Menu untuk Guru -->
         <li class="{{ request()->routeIs('jurnal.*') ? 'active' : '' }}">
             <a href="{{ route('jurnal.index') }}">
-                <i class="fa fa-book"></i> <span>Jurnal PKL Siswa</span>
+                <i class="fa fa-book"></i> <span>Laporan Kegiatan Siswa</span>
+
             </a>
         </li>
 
@@ -80,7 +81,8 @@
         <!-- Menu untuk Siswa -->
         <li class="{{ request()->routeIs('jurnal.*') ? 'active' : '' }}">
             <a href="{{ route('jurnal.index') }}">
-                <i class="fa fa-book"></i> <span>Jurnal PKL Saya</span>
+                <i class="fa fa-book"></i> <span>Laporan Kegiatan Saya</span>
+
             </a>
         </li>
 

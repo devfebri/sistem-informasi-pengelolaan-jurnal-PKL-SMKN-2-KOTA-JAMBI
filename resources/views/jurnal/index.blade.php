@@ -5,11 +5,11 @@
 <section class="content-header">
     <h1>
         <i class="fa fa-book"></i>        @if(Auth::user()->role == 'siswa')
-            Jurnal PKL Saya
+            Laporan Kegiatan Siswa
         @elseif(Auth::user()->role == 'guru')
-            Jurnal PKL Siswa Bimbingan
+            Laporan Kegiatan Siswa Bimbingan
         @else
-            Data Jurnal PKL
+            Data Laporan Kegiatan Siswa
         @endif
         <small>
             @if(Auth::user()->role == 'siswa')
