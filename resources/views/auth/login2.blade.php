@@ -90,7 +90,7 @@
                     </div>
                 </div>            </form>
             
-            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; font-size: 13px;">
+            {{-- <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; font-size: 13px;">
               
                 
                 <div style="border-top: 1px solid #dee2e6; padding-top: 10px;">
@@ -102,7 +102,7 @@
                         <strong>Pimpinan:</strong> pimpinan / password
                     </div>
                 </div>
-            </div>
+            </div> --}}
             
             <a href="{{ route('password.request') }}" class="register-link">Lupa password?</a>
             <a href="{{ route('register') }}" class="register-link">Daftar akun baru</a>
