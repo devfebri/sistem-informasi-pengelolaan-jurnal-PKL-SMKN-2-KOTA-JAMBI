@@ -68,6 +68,25 @@
             </div>
         </div>
 
+        <!-- Laporan Per Guru -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-purple"><i class="fa fa-user-md"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Laporan Per Guru</span>
+                    <span class="info-box-number">Per Guru</span>
+                    <div class="info-box-more">
+                        <a href="{{ route('laporan.guru') }}" class="btn btn-info btn-xs" style="background-color: #605ca8; border-color: #605ca8;">
+                            <i class="fa fa-eye"></i> Lihat Laporan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row kedua untuk quick PDF -->
+    <div class="row">
         <!-- Quick PDF -->
         <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="info-box">
@@ -96,7 +115,7 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="box box-solid box-info">
                                 <div class="box-header">
                                     <h4 class="box-title">
@@ -113,7 +132,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="box box-solid box-success">
                                 <div class="box-header">
                                     <h4 class="box-title">
@@ -130,7 +149,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="box box-solid box-warning">
                                 <div class="box-header">
                                     <h4 class="box-title">
@@ -143,6 +162,23 @@
                                         <li><i class="fa fa-check-circle text-green"></i> Aktivitas jurnal instansi</li>
                                         <li><i class="fa fa-check-circle text-green"></i> Performa siswa per instansi</li>
                                         <li><i class="fa fa-check-circle text-green"></i> Statistik validasi jurnal</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="box box-solid" style="border-top: 3px solid #605ca8;">
+                                <div class="box-header">
+                                    <h4 class="box-title">
+                                        <i class="fa fa-user-md" style="color: #605ca8;"></i> Laporan Per Guru
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fa fa-check-circle text-green"></i> Daftar siswa bimbingan</li>
+                                        <li><i class="fa fa-check-circle text-green"></i> Aktivitas jurnal siswa</li>
+                                        <li><i class="fa fa-check-circle text-green"></i> Performa siswa bimbingan</li>
+                                        <li><i class="fa fa-check-circle text-green"></i> Analisis bimbingan guru</li>
                                     </ul>
                                 </div>
                             </div>

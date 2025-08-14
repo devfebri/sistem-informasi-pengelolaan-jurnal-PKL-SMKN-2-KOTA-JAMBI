@@ -52,5 +52,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/lengkap', [LaporanController::class, 'laporanLengkap'])->name('laporan.lengkap');
         Route::get('/siswa', [LaporanController::class, 'laporanSiswa'])->name('laporan.siswa');
         Route::get('/instansi', [LaporanController::class, 'laporanInstansi'])->name('laporan.instansi');
+        Route::get('/guru', [LaporanController::class, 'laporanGuru'])->name('laporan.guru');
     });
 });

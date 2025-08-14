@@ -169,7 +169,7 @@
                         </div>
 
                         <!-- Section: Keamanan (Optional) -->
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-xs-12">
                                 <h4 class="box-title"><i class="fa fa-lock text-red"></i> Ubah Password (Opsional)</h4>
                                 <hr style="margin-top: 5px;">
@@ -196,7 +196,7 @@
                                            class="form-control" placeholder="Ulangi password baru">
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     
                     <div class="box-footer">

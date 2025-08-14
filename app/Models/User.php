@@ -68,4 +68,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\User::class, 'guru_id')->where('role', 'siswa');
     }
+
+    // Relasi ke jurnal siswa
+    public function jurnal()
+    {
+        return $this->hasMany(\App\Models\Jurnal::class, 'user_id');
+    }
+    public function penilaian()
+    {
+        return $this->hasMany(\App\Models\Penilaian::class, 'guru_id');
+    }
 }
