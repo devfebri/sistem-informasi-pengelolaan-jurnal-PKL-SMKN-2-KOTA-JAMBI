@@ -114,52 +114,59 @@ class LaporanController extends Controller
     public function laporanSiswa(Request $request)
     {
         $siswaId = $request->get('siswa_id');
-        $tanggalMulai = $request->get('tanggal_mulai', Carbon::now()->subMonths(3)->format('Y-m-d'));
-        $tanggalSelesai = $request->get('tanggal_selesai', Carbon::now()->format('Y-m-d'));
+        $tanggalMulai = $request->get('tanggal_mulai');
+        $tanggalSelesai = $request->get('tanggal_selesai');
         
         $siswa = null;
-        $jurnals = collect();
-        $penilaians = collect();
-        $statistik = [
-            'total_jurnal' => 0,
-            'jurnal_valid' => 0,
-            'jurnal_revisi' => 0,
-            'jurnal_tidak_valid' => 0,
-            'belum_validasi' => 0,
-            'nilai_rata_rata' => 0
-        ];
+        $jurnalSiswa = collect();
+        $penilaianSiswa = collect();
+        $totalJurnal = 0;
+        $jurnalValid = 0;
+        $totalPenilaian = 0;
+        $averageNilai = 0;
         
         if ($siswaId) {
             $siswa = User::with(['instansi', 'guru'])->find($siswaId);
             
             if ($siswa) {
-                $jurnals = Jurnal::with(['penilaian'])
-                    ->where('user_id', $siswa->id)
-                    ->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai])
-                    ->orderBy('tanggal', 'desc')
-                    ->get();
-                    
-                $penilaians = Penilaian::with(['guru'])
+                // Query jurnal dengan filter tanggal opsional
+                $jurnalQuery = Jurnal::with(['penilaian'])
+                    ->where('user_id', $siswa->id);
+                
+                if ($tanggalMulai && $tanggalSelesai) {
+                    $jurnalQuery->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai]);
+                }
+                
+                $jurnalSiswa = $jurnalQuery->orderBy('tanggal', 'desc')->get();
+                
+                // Query penilaian dengan filter tanggal opsional
+                $penilaianQuery = Penilaian::with(['guru'])
                     ->where('siswa_id', $siswa->id)
-                    ->whereNotNull('periode_penilaian')
-                    ->whereBetween('tanggal_penilaian', [$tanggalMulai, $tanggalSelesai])
-                    ->orderBy('tanggal_penilaian', 'desc')
-                    ->get();
-                    
-                $statistik = [
-                    'total_jurnal' => $jurnals->count(),
-                    'jurnal_valid' => $jurnals->filter(function($j) { return $j->penilaian->first()?->status_validasi == 'valid'; })->count(),
-                    'jurnal_revisi' => $jurnals->filter(function($j) { return $j->penilaian->first()?->status_validasi == 'revisi'; })->count(),
-                    'jurnal_tidak_valid' => $jurnals->filter(function($j) { return $j->penilaian->first()?->status_validasi == 'tidak_valid'; })->count(),
-                    'belum_validasi' => $jurnals->filter(function($j) { return !$j->penilaian->first(); })->count(),
-                    'nilai_rata_rata' => $penilaians->avg('nilai') ?? 0
-                ];
+                    ->whereNotNull('periode_penilaian');
+                
+                if ($tanggalMulai && $tanggalSelesai) {
+                    $penilaianQuery->whereBetween('tanggal_penilaian', [$tanggalMulai, $tanggalSelesai]);
+                }
+                
+                $penilaianSiswa = $penilaianQuery->orderBy('tanggal_penilaian', 'desc')->get();
+                
+                // Statistik
+                $totalJurnal = $jurnalSiswa->count();
+                $jurnalValid = $jurnalSiswa->filter(function($j) { 
+                    return $j->penilaian->first()?->status_validasi == 'valid'; 
+                })->count();
+                $totalPenilaian = $penilaianSiswa->count();
+                $averageNilai = $penilaianSiswa->avg('nilai') ?? 0;
             }
         }
         
         $siswaList = User::where('role', 'siswa')->orderBy('name')->get();
         
-        $data = compact('siswa', 'jurnals', 'penilaians', 'statistik', 'siswaList', 'tanggalMulai', 'tanggalSelesai');
+        $data = compact(
+            'siswa', 'jurnalSiswa', 'penilaianSiswa', 'siswaList', 
+            'tanggalMulai', 'tanggalSelesai', 'totalJurnal', 
+            'jurnalValid', 'totalPenilaian', 'averageNilai'
+        );
         
         if ($request->get('download') == 'pdf' && $siswa) {
             $pdf = Pdf::loadView('laporan.pdf.siswa', $data);
@@ -173,50 +180,92 @@ class LaporanController extends Controller
     public function laporanInstansi(Request $request)
     {
         $instansiId = $request->get('instansi_id');
-        $tanggalMulai = $request->get('tanggal_mulai', Carbon::now()->subMonths(3)->format('Y-m-d'));
-        $tanggalSelesai = $request->get('tanggal_selesai', Carbon::now()->format('Y-m-d'));
+        $tanggalMulai = $request->get('tanggal_mulai');
+        $tanggalSelesai = $request->get('tanggal_selesai');
         
         $instansi = null;
-        $siswaList = collect();
-        $jurnals = collect();
-        $statistik = [
-            'total_siswa' => 0,
-            'total_jurnal' => 0,
-            'jurnal_valid' => 0,
-            'jurnal_revisi' => 0,
-            'jurnal_tidak_valid' => 0
-        ];
+        $siswaInstansi = collect();
+        $jurnalTerbaru = collect();
+        $penilaianTerbaru = collect();
+        $totalSiswa = 0;
+        $totalJurnal = 0;
+        $jurnalValid = 0;
+        $averageNilai = 0;
         
         if ($instansiId) {
             $instansi = Instansi::find($instansiId);
             
             if ($instansi) {
-                $siswaList = User::where('role', 'siswa')
+                // Siswa di instansi ini
+                $siswaInstansi = User::where('role', 'siswa')
                     ->where('instansi_id', $instansi->id)
                     ->with(['guru'])
                     ->get();
-                    
-                $jurnals = Jurnal::with(['siswa', 'penilaian'])
+                
+                // Query jurnal dengan filter tanggal opsional
+                $jurnalQuery = Jurnal::with(['siswa', 'penilaian'])
                     ->whereHas('siswa', function($q) use ($instansi) {
-                        $q->where('instansi_id', $instansi->id);
+                        $q->where('instansi_id', $instansi->id)->where('role', 'siswa');
+                    });
+                
+                if ($tanggalMulai && $tanggalSelesai) {
+                    $jurnalQuery->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai]);
+                }
+                
+                $jurnalTerbaru = $jurnalQuery->orderBy('tanggal', 'desc')->take(10)->get();
+                
+                // Query penilaian dengan filter tanggal opsional  
+                $penilaianQuery = Penilaian::with(['siswa', 'guru'])
+                    ->whereHas('siswa', function($q) use ($instansi) {
+                        $q->where('instansi_id', $instansi->id)->where('role', 'siswa');
                     })
-                    ->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai])
-                    ->orderBy('tanggal', 'desc')
-                    ->get();
+                    ->whereNotNull('periode_penilaian');
+                
+                if ($tanggalMulai && $tanggalSelesai) {
+                    $penilaianQuery->whereBetween('tanggal_penilaian', [$tanggalMulai, $tanggalSelesai]);
+                }
+                
+                $penilaianTerbaru = $penilaianQuery->orderBy('tanggal_penilaian', 'desc')->take(10)->get();
+                
+                // Statistik
+                $totalSiswa = $siswaInstansi->count();
+                $totalJurnal = $jurnalQuery->count();
+                $jurnalValid = $jurnalTerbaru->filter(function($j) { 
+                    return $j->penilaian->first()?->status_validasi == 'valid'; 
+                })->count();
+                $averageNilai = $penilaianTerbaru->avg('nilai') ?? 0;
+                
+                // Hitung data per siswa untuk widget
+                foreach ($siswaInstansi as $siswa) {
+                    $siswaJurnalQuery = Jurnal::where('user_id', $siswa->id);
+                    $siswaPenilaianQuery = Penilaian::where('siswa_id', $siswa->id)->whereNotNull('periode_penilaian');
                     
-                $statistik = [
-                    'total_siswa' => $siswaList->count(),
-                    'total_jurnal' => $jurnals->count(),
-                    'jurnal_valid' => $jurnals->filter(function($j) { return $j->penilaian->first()?->status_validasi == 'valid'; })->count(),
-                    'jurnal_revisi' => $jurnals->filter(function($j) { return $j->penilaian->first()?->status_validasi == 'revisi'; })->count(),
-                    'jurnal_tidak_valid' => $jurnals->filter(function($j) { return $j->penilaian->first()?->status_validasi == 'tidak_valid'; })->count(),
-                ];
+                    if ($tanggalMulai && $tanggalSelesai) {
+                        $siswaJurnalQuery->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai]);
+                        $siswaPenilaianQuery->whereBetween('tanggal_penilaian', [$tanggalMulai, $tanggalSelesai]);
+                    }
+                    
+                    $siswa->jurnal_count = $siswaJurnalQuery->count();
+                    $siswa->jurnal_valid_count = Penilaian::where('status_validasi', 'valid')
+                        ->whereHas('jurnal', function($q) use ($siswa, $tanggalMulai, $tanggalSelesai) {
+                            $q->where('user_id', $siswa->id);
+                            if ($tanggalMulai && $tanggalSelesai) {
+                                $q->whereBetween('tanggal', [$tanggalMulai, $tanggalSelesai]);
+                            }
+                        })
+                        ->count();
+                    $siswa->avg_nilai = $siswaPenilaianQuery->avg('nilai') ?? 0;
+                }
             }
         }
         
         $instansiList = Instansi::orderBy('nama')->get();
         
-        $data = compact('instansi', 'siswaList', 'jurnals', 'statistik', 'instansiList', 'tanggalMulai', 'tanggalSelesai');
+        $data = compact(
+            'instansi', 'siswaInstansi', 'jurnalTerbaru', 'penilaianTerbaru', 
+            'instansiList', 'tanggalMulai', 'tanggalSelesai', 'totalSiswa', 
+            'totalJurnal', 'jurnalValid', 'averageNilai'
+        );
         
         if ($request->get('download') == 'pdf' && $instansi) {
             $pdf = Pdf::loadView('laporan.pdf.instansi', $data);

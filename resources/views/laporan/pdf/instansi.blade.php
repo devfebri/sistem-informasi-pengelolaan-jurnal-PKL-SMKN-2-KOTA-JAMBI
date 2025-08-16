@@ -191,9 +191,9 @@
         </div>
     </div>
 
-    @if($siswaList->count() > 0)
+    @if($siswaInstansi->count() > 0)
     <!-- Daftar Siswa -->
-    <div class="section-title">DAFTAR SISWA PKL ({{ $siswaList->count() }} Siswa)</div>
+    <div class="section-title">DAFTAR SISWA PKL ({{ $siswaInstansi->count() }} Siswa)</div>
     <table>
         <tr>
             <th width="5%">No</th>
@@ -203,7 +203,7 @@
             <th width="20%">Email</th>
             <th width="10%">No. Telepon</th>
         </tr>
-        @foreach($siswaList as $index => $siswa)
+        @foreach($siswaInstansi as $index => $siswa)
             <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $siswa->name }}</td>
@@ -216,8 +216,8 @@
     </table>
     @endif
 
-    @if($jurnals->count() > 0)
-    @if($siswaList->count() > 10)
+    @if($jurnalTerbaru->count() > 0)
+    @if($siswaInstansi->count() > 10)
     <div class="page-break"></div>
     @endif
     
@@ -256,7 +256,7 @@
             <th width="18%">Waktu</th>
             <th width="15%">Status</th>
         </tr>
-        @foreach($jurnals->take(25) as $jurnal)
+        @foreach($jurnalTerbaru->take(25) as $jurnal)
             <tr>
                 <td>{{ is_object($jurnal->tanggal) ? $jurnal->tanggal->format('d/m/Y') : date('d/m/Y', strtotime($jurnal->tanggal)) }}</td>
                 <td>{{ $jurnal->siswa->name ?? 'N/A' }}</td>
@@ -274,14 +274,14 @@
         @endforeach
     </table>
 
-    @if($jurnals->count() > 25)
+    @if($jurnalTerbaru->count() > 25)
     <p style="text-align: center; color: #666; font-style: italic;">
-        Menampilkan 25 jurnal terbaru dari {{ $jurnals->count() }} total jurnal
+        Menampilkan 25 jurnal terbaru dari {{ $jurnalTerbaru->count() }} total jurnal
     </p>
     @endif
     @endif
 
-    @if($siswaList->count() == 0)
+    @if($siswaInstansi->count() == 0)
     <div class="section-title">INFORMASI</div>
     <p style="text-align: center; color: #666; font-style: italic;">
         Tidak ada siswa yang terdaftar di instansi ini.

@@ -208,7 +208,7 @@
                                         <th>Nama Siswa</th>
                                         <th>NISN</th>
                                         <th>Instansi PKL</th>
-                                        <th>Total Jurnal</th>
+                                        <th>Total Jurnals</th>
                                         <th>Jurnal Valid</th>
                                         <th>Nilai Rata-rata</th>
                                     </tr>
@@ -222,9 +222,10 @@
                                                 <td>{{ $siswa->nisn }}</td>
                                                 <td>{{ optional($siswa->instansi)->nama ?? 'Belum ditentukan' }}</td>
                                                 <td>
-                                                    <span class="badge bg-blue">{{ $siswa->jurnal_count ?? 0 }}</span>
+                                                    <span class="badge bg-blue">{{ $siswa->jurnalcount($siswa->id) ?? 0 }}</span>
+
                                                 </td>
-                                                <td>
+                                                <td> 
                                                     <span class="badge bg-green">{{ $siswa->jurnal_valid_count ?? 0 }}</span>
                                                 </td>
                                                 <td>

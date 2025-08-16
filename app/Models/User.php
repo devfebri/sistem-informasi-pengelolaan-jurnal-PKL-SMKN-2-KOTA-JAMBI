@@ -74,6 +74,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Jurnal::class, 'user_id');
     }
+
+    public function jurnalcount($siswa)
+    {
+        $countJurnal=Jurnal::where('user_id',$siswa)->count();
+        // dd($countJurnal);
+        return $countJurnal;
+    }
     public function penilaian()
     {
         return $this->hasMany(\App\Models\Penilaian::class, 'guru_id');
