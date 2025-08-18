@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->date('tanggal');
-            $table->string('jam_mulai')->nullable();
-            $table->string('jam_selesai')->nullable();
+            $table->string('jam_mulai',7)->nullable();
+            $table->string('jam_selesai',7)->nullable();
             $table->text('kegiatan');
-            $table->string('file_jurnal')->nullable();
-            $table->string('status')->default('menunggu');
+            $table->string('status',20)->default('menunggu');
             $table->timestamps();
         });
     }

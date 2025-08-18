@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('jurnals', function (Blueprint $table) {
             // Hapus kolom file_jurnal
-            $table->dropColumn('file_jurnal');
+ 
             
             // Tambah kolom deskripsi
             $table->text('deskripsi')->nullable()->after('kegiatan');
@@ -27,7 +27,7 @@ return new class extends Migration
     {
         Schema::table('jurnals', function (Blueprint $table) {
             // Kembalikan kolom file_jurnal
-            $table->string('file_jurnal')->nullable()->after('kegiatan');
+
             
             // Hapus kolom deskripsi
             $table->dropColumn('deskripsi');
